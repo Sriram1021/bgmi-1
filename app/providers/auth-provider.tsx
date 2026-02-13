@@ -60,9 +60,20 @@ export function AuthProvider({ children }: AuthProviderProps) {
       }
     }
 
-    const baseUrl = `${API_BASE_URL}api/auth/google`;
+    // Use local proxy route instead of direct backend to handle redirects properly
+    const baseUrl = '/api/auth/google';
 
     const params = new URLSearchParams();
+    
+    // Explicitly set the OAuth callback URL to the frontend proxy
+    // This tells the backend (if configured to listen) to use THIS url for Google redirect_uri
+    if (typeof window !== 'undefined') {
+      const origin = window.location.origin;
+      const callbackUrl = `${origin}/api/auth/google/callback`;
+      params.set('callbackUrl', callbackUrl);
+      // Some backends check redirect_uri param for the OAuth redirect
+      params.set('redirect_uri', callbackUrl); 
+    }
     
     // Fix: Send absolute URL for redirect so backend knows where to return (prevents localhost issue)
     const origin = window.location.origin;
