@@ -51,12 +51,15 @@ export function SlimSidebar() {
     }
 
     // Participant Default
-    const items: { icon: any; label: string; href: string }[] = [
-      { icon: LayoutDashboard, label: 'My Page', href: '/participant/dashboard' },
-      // { icon: Zap, label: 'Quick Join', href: '/quick-play' },
-      { icon: Trophy, label: 'Tournaments', href: '/tournaments' },
-      // { icon: BarChart3, label: 'Leaderboards', href: '/leaderboards' },
-    ];
+    const items: { icon: any; label: string; href: string }[] = [];
+
+    if (auth?.isAuthenticated) {
+      items.push({ icon: LayoutDashboard, label: 'My Page', href: '/participant/dashboard' });
+    }
+
+    // items.push({ icon: Zap, label: 'Quick Join', href: '/quick-play' });
+    items.push({ icon: Trophy, label: 'Tournaments', href: '/tournaments' });
+    // items.push({ icon: BarChart3, label: 'Leaderboards', href: '/leaderboards' });
 
     const appStatus = user?.organizerApplication?.status;
     if (effectiveRole === 'PARTICIPANT' && auth?.isAuthenticated) {
