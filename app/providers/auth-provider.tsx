@@ -63,7 +63,14 @@ export function AuthProvider({ children }: AuthProviderProps) {
     const baseUrl = `${API_BASE_URL}api/auth/google`;
 
     const params = new URLSearchParams();
-    if (redirectPath) params.set('redirect', redirectPath);
+    
+    // Fix: Send absolute URL for redirect so backend knows where to return (prevents localhost issue)
+    const origin = window.location.origin;
+    const finalRedirect = redirectPath 
+      ? (redirectPath.startsWith('http') ? redirectPath : new URL(redirectPath, origin).toString())
+      : new URL('/participant/dashboard', origin).toString();
+      
+    params.set('redirect', finalRedirect);
     if (role) params.set('role', role);
 
     const url = `${baseUrl}?${params.toString()}`;
